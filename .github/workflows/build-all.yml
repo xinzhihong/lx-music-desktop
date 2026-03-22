@@ -21,7 +21,7 @@ jobs:
           repository: xinzhihong/lx-music-desktop
 
       - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
 
       - name: Build KuGou API (Windows x64)
         shell: bash
@@ -70,6 +70,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: xinzhihong/lx-music-desktop
+
+      - name: Checkout & Build KuGouMusicApi (Windows arm64)
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+          cd KuGouMusicApi && npm install && npm run pkgwin
+          mv KuGouMusicApi/bin/app_win KuGouMusicApi/bin/app.exe 2>/dev/null || true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

@@ -3,15 +3,6 @@ directories:
   buildResources: build/icons
 
 extraResources:
-  # 酷狗 API - 所有平台二进制都打包进去，运行时按平台选择
-  - from: ../KuGouMusicApi/bin/app.exe
-    to: kugou-api/app.exe
-  - from: ../KuGouMusicApi/bin/app_linux
-    to: kugou-api/app_linux
-  - from: ../KuGouMusicApi/bin/app_macos
-    to: kugou-api/app_macos
-  - from: ../KuGouMusicApi/bin/app_macos_arm64
-    to: kugou-api/app_macos_arm64
   - ./licenses
 
 mac:
