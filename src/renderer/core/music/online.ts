@@ -13,6 +13,12 @@ import {
   handleGetOnlinePicUrl,
   getCachedLyricInfo,
 } from './utils'
+import { currentQuality } from '@renderer/store/player/state'
+
+const qualityLabel: Record<string, string> = {
+  '128k': '128K', '192k': '192K', '320k': '320K',
+  'flac': 'FLAC', 'flac24bit': 'Hi-Res', 'ape': 'APE', 'wav': 'WAV',
+}
 
 /* export const setMusicUrl = ({ musicInfo, type, url }: {
   musicInfo: LX.Music.MusicInfo
@@ -51,13 +57,21 @@ export const getMusicUrl = async({ musicInfo, quality, isRefresh, allowToggleSou
 
   //   // return Promise.reject(new Error('该歌曲没有可播放的音频'))
   // }
+  // 如果歌曲没有音质信息，默认允许尝试所有音质
+  if (!Object.keys(musicInfo.meta._qualitys).length) {
+    musicInfo.meta._qualitys = { '128k': { size: null } as any, '320k': { size: null } as any, 'flac': { size: null } as any, 'flac24bit': { size: null } as any }
+  }
   const targetQuality = quality ?? getPlayQuality(appSetting['player.playQuality'], musicInfo)
   const cachedUrl = await getStoreMusicUrl(musicInfo, targetQuality)
-  if (cachedUrl && !isRefresh) return cachedUrl
+  if (cachedUrl && !isRefresh) {
+    window.lxData.currentQuality.value = qualityLabel[targetQuality] || targetQuality.toUpperCase()
+    return cachedUrl
+  }
 
   return handleGetOnlineMusicUrl({ musicInfo, quality, onToggleSource, isRefresh, allowToggleSource }).then(({ url, quality: targetQuality, musicInfo: targetMusicInfo, isFromCache }) => {
     if (targetMusicInfo.id != musicInfo.id && !isFromCache) void saveMusicUrl(targetMusicInfo, targetQuality, url)
     void saveMusicUrl(musicInfo, targetQuality, url)
+    window.lxData.currentQuality.value = qualityLabel[targetQuality] || targetQuality.toUpperCase()
     return url
   })
 }

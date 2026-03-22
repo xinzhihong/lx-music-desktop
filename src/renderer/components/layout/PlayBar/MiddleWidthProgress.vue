@@ -6,7 +6,7 @@
     </div>
     <div :class="$style.infoContent">
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
-        {{ title }}
+        <span>{{ title }}</span><span v-if="qualityText" style="font-weight:bold;color:#e6a23c"> {{ qualityText }}</span>
       </div>
       <div :class="$style.status">{{ statusText }}</div>
     </div>
@@ -97,6 +97,8 @@ export default {
       setMusicInfo({ pic: null })
     }
 
+    const qualityText = computed(() => window.lxData.currentQuality?.value || '')
+
     const handleToMusicLocation = () => {
       const listId = playMusicInfo.listId
       if (!listId || listId == LIST_IDS.DOWNLOAD || !playMusicInfo.musicInfo) return
@@ -129,6 +131,7 @@ export default {
       handleTransitionEnd,
       handleCopy,
       imgError,
+      qualityText,
       statusText,
       title,
       showPlayerDetail,

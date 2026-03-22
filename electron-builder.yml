@@ -1,0 +1,42 @@
+directories:
+  output: build
+  buildResources: build/icons
+
+extraResources:
+  - from: ../KuGouMusicApi/bin/app.exe
+    to: kugou-api/app.exe
+    when:
+      platform: win32
+  - from: ../KuGouMusicApi/bin/app_linux
+    to: kugou-api/app_linux
+    when:
+      platform: linux
+  - from: ../KuGouMusicApi/bin/app_macos
+    to: kugou-api/app_macos
+    when:
+      platform: darwin
+      arch: x64
+  - from: ../KuGouMusicApi/bin/app_macos_arm64
+    to: kugou-api/app_macos_arm64
+    when:
+      platform: darwin
+      arch: arm64
+  - ./licenses
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  icon: build/icons/icon.icns
+  identity: null
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications

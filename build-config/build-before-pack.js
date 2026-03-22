@@ -53,6 +53,10 @@ const replaceQrcDecodeLib = async(electronNodeAbi, platform, arch) => {
 
 module.exports = async(context) => {
   const { electronPlatformName, arch } = context
+  
+  // 复制 API 文件
+  await copyApiFiles(context, electronPlatformName, arch)
+  
   const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/^[^\d]*?(\d+)/, '$1')
   const electronNodeAbi = nodeAbi.getAbi(electronVersion, 'electron')
   await replaceQrcDecodeLib(electronNodeAbi, electronPlatformName, arch)
@@ -75,5 +79,51 @@ module.exports = async(context) => {
       // console.log('restore binding file...')
       await fsPromises.rename(bindingBakFilePath, bindingFilePath)
       break
+  }
+}
+
+// 复制 API 文件到 app 的 Resources 目录
+const copyApiFiles = async(context, platform, arch) => {
+  console.log('Copy API files for platform:', platform, 'arch:', arch)
+  
+  const appResourcesPath = path.join(context.appOutDir, 'Resources')
+  const kugouApiDir = path.join(appResourcesPath, 'kugou-api')
+  const neteaseApiDir = path.join(appResourcesPath, 'netease-api')
+  
+  // 确保目录存在
+  if (!fs.existsSync(kugouApiDir)) fs.mkdirSync(kugouApiDir, { recursive: true })
+  if (!fs.existsSync(neteaseApiDir)) fs.mkdirSync(neteaseApiDir, { recursive: true })
+  
+  // 根据平台选择可执行文件（arch 是数字枚举，不是字符串）
+  let kugouExeName, neteaseExeName
+  if (platform === 'darwin') {
+    kugouExeName = arch === Arch.arm64 ? 'app_macos_arm64' : 'app_macos'
+    neteaseExeName = arch === Arch.arm64 ? 'app_macos_arm64' : 'app_macos'
+  } else if (platform === 'win32') {
+    kugouExeName = 'app.exe'
+    neteaseExeName = 'app.exe'
+  } else if (platform === 'linux') {
+    kugouExeName = 'app_linux'
+    neteaseExeName = 'app_linux'
+  }
+  
+  // 复制酷狗 API
+  const kugouSource = path.join(__dirname, `../../KuGouMusicApi/bin/${kugouExeName}`)
+  const kugouTarget = path.join(kugouApiDir, kugouExeName)
+  if (fs.existsSync(kugouSource)) {
+    fs.copyFileSync(kugouSource, kugouTarget)
+    console.log('Copied KuGou API:', kugouExeName, 'from', kugouSource, 'to', kugouTarget)
+  } else {
+    console.warn('KuGou API not found:', kugouSource)
+  }
+  
+  // 复制网易云 API
+  const neteaseSource = path.join(__dirname, `../netease-api/bin/${neteaseExeName}`)
+  const neteaseTarget = path.join(neteaseApiDir, neteaseExeName)
+  if (fs.existsSync(neteaseSource)) {
+    fs.copyFileSync(neteaseSource, neteaseTarget)
+    console.log('Copied Netease API:', neteaseExeName, 'from', neteaseSource, 'to', neteaseTarget)
+  } else {
+    console.warn('Netease API not found:', neteaseSource)
   }
 }

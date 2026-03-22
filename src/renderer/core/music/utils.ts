@@ -227,7 +227,7 @@ export const getPlayQuality = (highQuality: LX.Quality, musicInfo: LX.Music.Musi
 
     let t = TRY_QUALITYS_LIST
       .slice(TRY_QUALITYS_LIST.indexOf(highQuality as TryQualityType))
-      .find(q => musicInfo.meta._qualitys[q] && list?.includes(q))
+      .find(q => musicInfo.meta._qualitys[q] && (list ? list.includes(q) : true))
 
     if (t) type = t
   }
@@ -255,6 +255,10 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     if (!assertApiSupport(musicInfo.source)) continue
+    // 如果歌曲没有音质信息，默认允许尝试所有音质
+    if (!Object.keys(musicInfo.meta._qualitys).length) {
+      musicInfo.meta._qualitys = { '128k': { size: null } as any, '320k': { size: null } as any, 'flac': { size: null } as any, 'flac24bit': { size: null } as any }
+    }
     itemQuality = quality ?? getPlayQuality(appSetting['player.playQuality'], musicInfo)
     if (!musicInfo.meta._qualitys[itemQuality]) continue
 
@@ -302,6 +306,10 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
 }> => {
   if (!await window.lx.apiInitPromise[0]) throw new Error('source init failed')
   // console.log(musicInfo.source)
+  // 如果歌曲没有音质信息，默认允许尝试所有音质
+  if (!Object.keys(musicInfo.meta._qualitys).length) {
+    musicInfo.meta._qualitys = { '128k': { size: null } as any, '320k': { size: null } as any, 'flac': { size: null } as any, 'flac24bit': { size: null } as any }
+  }
   const targetQuality = quality ?? getPlayQuality(appSetting['player.playQuality'], musicInfo)
 
   let reqPromise

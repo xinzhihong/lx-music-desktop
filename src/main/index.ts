@@ -11,6 +11,7 @@ import {
 } from './app'
 import { isLinux } from '@common/utils'
 import { initAppSetting } from '@main/app'
+import './api-startup'
 import registerModules from '@main/modules'
 
 // 初始化应用

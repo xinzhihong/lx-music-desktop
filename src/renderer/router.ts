@@ -15,6 +15,38 @@ const router = createRouter({
       },
     },
     {
+      path: '/kugou',
+      name: 'Kugou',
+      component: require('./views/Kugou/index.vue').default,
+      meta: {
+        name: 'Kugou',
+      },
+    },
+    {
+      path: '/kugou/login',
+      name: 'KugouLogin',
+      component: require('./views/Kugou/Login.vue').default,
+      meta: {
+        name: 'KugouLogin',
+      },
+    },
+    {
+      path: '/netease',
+      name: 'Netease',
+      component: require('./views/Netease/index.vue').default,
+      meta: {
+        name: 'Netease',
+      },
+    },
+    {
+      path: '/netease/login',
+      name: 'NeteaseLogin',
+      component: require('./views/Netease/Login.vue').default,
+      meta: {
+        name: 'NeteaseLogin',
+      },
+    },
+    {
       path: '/songList/list',
       name: 'SongList',
       component: require('./views/songList/List/index.vue').default,
@@ -68,5 +100,15 @@ const router = createRouter({
   linkExactActiveClass: 'exact-active-link',
 })
 
+
+let isFirstLoad = true
+router.beforeEach((to) => {
+  if (isFirstLoad && to.path !== "/search") {
+    isFirstLoad = false
+    return "/search"
+  }
+  isFirstLoad = false
+  return true
+})
 
 export default router
