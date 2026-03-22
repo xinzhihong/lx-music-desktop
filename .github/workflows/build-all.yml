@@ -20,16 +20,13 @@ jobs:
         with:
           repository: xinzhihong/lx-music-desktop
 
-      - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
-
-      - name: Build KuGou API (Windows x64)
-        shell: bash
-        working-directory: KuGouMusicApi
+      - name: Checkout & Build KuGouMusicApi
         run: |
+          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git $env:GITHUB_WORKSPACE\..\KuGouMusicApi
+          cd $env:GITHUB_WORKSPACE\..\KuGouMusicApi
           npm install
           npm run pkgwin
-          mv bin/app_win bin/app.exe 2>/dev/null || true
+          Move-Item -Force bin\app_win bin\app.exe
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -71,12 +68,13 @@ jobs:
         with:
           repository: xinzhihong/lx-music-desktop
 
-      - name: Checkout & Build KuGouMusicApi (Windows arm64)
-        shell: bash
+      - name: Checkout & Build KuGouMusicApi
         run: |
-          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
-          cd KuGouMusicApi && npm install && npm run pkgwin
-          mv KuGouMusicApi/bin/app_win KuGouMusicApi/bin/app.exe 2>/dev/null || true
+          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git $env:GITHUB_WORKSPACE\..\KuGouMusicApi
+          cd $env:GITHUB_WORKSPACE\..\KuGouMusicApi
+          npm install
+          npm run pkgwin
+          Move-Item -Force bin\app_win bin\app.exe
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -112,8 +110,9 @@ jobs:
       - name: Install python setuptools
         run: brew install python-setuptools
 
-      - name: Checkout & Build KuGou API (macOS x64)
+      - name: Checkout & Build KuGouMusicApi
         run: |
+          cd ${{ github.workspace }}/..
           git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
           cd KuGouMusicApi
           npm install
@@ -153,8 +152,9 @@ jobs:
       - name: Install python setuptools
         run: brew install python-setuptools
 
-      - name: Checkout & Build KuGou API (macOS arm64)
+      - name: Checkout & Build KuGouMusicApi
         run: |
+          cd ${{ github.workspace }}/..
           git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
           cd KuGouMusicApi
           npm install
