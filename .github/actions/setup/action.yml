@@ -9,11 +9,10 @@ runs:
       with:
         node-version: '22'
 
-    # - name: Get npm cache directory
-    #   run: node -p -e '`NPM_CACHE_DIR=${require("child_process").execSync("npm config get cache").toString()}`' >> $GITHUB_ENV
-    #   run: echo "NPM_CACHE_DIR=$(npm config get cache)" >> $GITHUB_ENV
+    - name: Get npm cache directory
+      shell: bash
+      run: echo "NPM_CACHE=$(npm config get cache)" >> $GITHUB_ENV
 
-    # https://docs.npmjs.com/cli/v10/configuring-npm/folders#cache
     - name: Cache node modules
       id: cache-npm
       uses: actions/cache@v4

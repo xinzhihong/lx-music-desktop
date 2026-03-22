@@ -15,33 +15,22 @@ jobs:
     name: Windows x64
     runs-on: windows-latest
     steps:
+      - name: Checkout KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
         with:
           repository: xinzhihong/lx-music-desktop
           path: lx-music-desktop
 
-      - name: Checkout KuGouMusicApi
-        shell: bash
-        run: |
-          cd ${{ github.workspace }}
-          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
-
       - name: Build KuGou API (Windows x64)
         shell: bash
+        working-directory: KuGouMusicApi
         run: |
-          cd KuGouMusicApi
           npm install
           npm run pkgwin
-          # 产出 bin/app_win，但 electron-builder 期望 app.exe
           mv bin/app_win bin/app.exe 2>/dev/null || true
-
-      - name: Setup layout
-        shell: bash
-        run: |
-          cd ${{ github.workspace }}
-          # KuGouMusicApi 必须在 lx-music-desktop 的同级目录
-          # checkout 已经放在同级了
 
       - name: Setup Node Env
         uses: ./lx-music-desktop/.github/actions/setup
@@ -55,6 +44,7 @@ jobs:
       - name: Build Setup x64
         working-directory: lx-music-desktop
         run: npm run pack:win:setup:x64
+
       - name: Upload Setup x64
         uses: actions/upload-artifact@v4
         with:
@@ -64,6 +54,7 @@ jobs:
       - name: Build 7z x64
         working-directory: lx-music-desktop
         run: npm run pack:win:7z:x64
+
       - name: Upload 7z x64
         uses: actions/upload-artifact@v4
         with:
@@ -74,17 +65,14 @@ jobs:
     name: Windows arm64
     runs-on: windows-latest
     steps:
+      - name: Checkout KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
         with:
           repository: xinzhihong/lx-music-desktop
           path: lx-music-desktop
-
-      - name: Checkout KuGouMusicApi
-        shell: bash
-        run: |
-          cd ${{ github.workspace }}
-          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
 
       - name: Setup Node Env
         uses: ./lx-music-desktop/.github/actions/setup
@@ -98,6 +86,7 @@ jobs:
       - name: Build Setup arm64
         working-directory: lx-music-desktop
         run: npm run pack:win:setup:arm64
+
       - name: Upload Setup arm64
         uses: actions/upload-artifact@v4
         with:
@@ -108,6 +97,9 @@ jobs:
     name: Mac x64
     runs-on: macos-latest
     steps:
+      - name: Checkout KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
         with:
@@ -117,14 +109,9 @@ jobs:
       - name: Install python setuptools
         run: brew install python-setuptools
 
-      - name: Checkout KuGouMusicApi
-        run: |
-          cd ${{ github.workspace }}
-          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
-
       - name: Build KuGou API (macOS x64)
+        working-directory: KuGouMusicApi
         run: |
-          cd KuGouMusicApi
           npm install
           npm run pkgmacos
 
@@ -140,6 +127,7 @@ jobs:
       - name: Build DMG
         working-directory: lx-music-desktop
         run: npm run pack:mac:dmg
+
       - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
@@ -150,6 +138,9 @@ jobs:
     name: Mac arm64
     runs-on: macos-latest
     steps:
+      - name: Checkout KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
         with:
@@ -159,14 +150,9 @@ jobs:
       - name: Install python setuptools
         run: brew install python-setuptools
 
-      - name: Checkout KuGouMusicApi
-        run: |
-          cd ${{ github.workspace }}
-          git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
-
       - name: Build KuGou API (macOS arm64)
+        working-directory: KuGouMusicApi
         run: |
-          cd KuGouMusicApi
           npm install
           npm run pkgmacos-arm64
 
@@ -182,6 +168,7 @@ jobs:
       - name: Build DMG arm64
         working-directory: lx-music-desktop
         run: npm run pack:mac:dmg:arm64
+
       - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
