@@ -14,12 +14,9 @@ jobs:
   Windows_x64:
     name: Windows x64
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: lx-music-desktop
     steps:
       - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
 
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
@@ -29,7 +26,7 @@ jobs:
 
       - name: Build KuGou API (Windows x64)
         shell: bash
-        working-directory: KuGouMusicApi
+        working-directory: ../KuGouMusicApi
         run: |
           npm install
           npm run pkgwin
@@ -41,14 +38,17 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: lx-music-desktop
         run: npm ci
 
       - name: Build src code
+        working-directory: lx-music-desktop
         run: |
           git status --porcelain
           npm run build
 
       - name: Build Setup x64
+        working-directory: lx-music-desktop
         run: npm run pack:win:setup:x64
 
       - name: Upload Setup x64
@@ -58,6 +58,7 @@ jobs:
           path: lx-music-desktop/build/*-x64-Setup.exe
 
       - name: Build 7z x64
+        working-directory: lx-music-desktop
         run: npm run pack:win:7z:x64
 
       - name: Upload 7z x64
@@ -69,12 +70,9 @@ jobs:
   Windows_arm64:
     name: Windows arm64
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: lx-music-desktop
     steps:
       - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
 
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
@@ -88,14 +86,17 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: lx-music-desktop
         run: npm ci
 
       - name: Build src code
+        working-directory: lx-music-desktop
         run: |
           git status --porcelain
           npm run build
 
       - name: Build Setup arm64
+        working-directory: lx-music-desktop
         run: npm run pack:win:setup:arm64
 
       - name: Upload Setup arm64
@@ -107,12 +108,9 @@ jobs:
   Mac_x64:
     name: Mac x64
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: lx-music-desktop
     steps:
       - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
 
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
@@ -124,7 +122,7 @@ jobs:
         run: brew install python-setuptools
 
       - name: Build KuGou API (macOS x64)
-        working-directory: KuGouMusicApi
+        working-directory: ../KuGouMusicApi
         run: |
           npm install
           npm run pkgmacos
@@ -135,14 +133,17 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: lx-music-desktop
         run: npm ci
 
       - name: Build src code
+        working-directory: lx-music-desktop
         run: |
           git status --porcelain
           npm run build
 
       - name: Build DMG
+        working-directory: lx-music-desktop
         run: npm run pack:mac:dmg
 
       - name: Upload DMG
@@ -154,12 +155,9 @@ jobs:
   Mac_arm64:
     name: Mac arm64
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: lx-music-desktop
     steps:
       - name: Checkout KuGouMusicApi
-        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git KuGouMusicApi
+        run: git clone --depth 1 https://github.com/xinzhihong/KuGouMusicApi.git ../KuGouMusicApi
 
       - name: Check out lx-music-desktop
         uses: actions/checkout@v4
@@ -171,7 +169,7 @@ jobs:
         run: brew install python-setuptools
 
       - name: Build KuGou API (macOS arm64)
-        working-directory: KuGouMusicApi
+        working-directory: ../KuGouMusicApi
         run: |
           npm install
           npm run pkgmacos-arm64
@@ -182,14 +180,17 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: lx-music-desktop
         run: npm ci
 
       - name: Build src code
+        working-directory: lx-music-desktop
         run: |
           git status --porcelain
           npm run build
 
       - name: Build DMG arm64
+        working-directory: lx-music-desktop
         run: npm run pack:mac:dmg:arm64
 
       - name: Upload DMG
